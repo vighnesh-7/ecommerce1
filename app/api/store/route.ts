@@ -15,6 +15,15 @@ export async function POST(
         
         if(!name) return new NextResponse("Name is required" , {status:400} );
 
+        const prevStore = await prismadb.store.findFirst({
+            where:{
+                name:name,
+                userId
+            },
+        })
+
+        if(prevStore) return new NextResponse("Store Name already taken ",{status:401})
+        
         //now we have all the neccesaary details to create a store api
         const store = await prismadb.store.create({
             data:{
